@@ -2,6 +2,7 @@ import {
   reactExtension,
   Banner,
   BlockStack,
+  useApi,
   Text
 } from "@shopify/ui-extensions-react/checkout";
 
