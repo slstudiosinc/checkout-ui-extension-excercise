@@ -10,6 +10,9 @@ export default reactExtension("purchase.checkout.block.render", () => (
 ));
 
 function Extension() {
+  const {lines} = useApi();
+
+  console.log('"Checkout Lines Here:', lines)
 
   return (
     <BlockStack border={"dotted"} padding={"tight"}>
