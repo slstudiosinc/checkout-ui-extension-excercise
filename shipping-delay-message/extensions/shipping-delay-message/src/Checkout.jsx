@@ -1,9 +1,10 @@
 import {
   reactExtension,
-  Banner,
   BlockStack,
+  Banner,
+  Text,
   useApi,
-  Text
+  useMetafields,
 } from "@shopify/ui-extensions-react/checkout";
 
 export default reactExtension("purchase.checkout.block.render", () => (
@@ -11,15 +12,36 @@ export default reactExtension("purchase.checkout.block.render", () => (
 ));
 
 function Extension() {
-  const {lines} = useApi();
-
-  console.log('"Checkout Lines Here:', lines)
+  const { lines } = useApi();
 
   return (
-    <BlockStack border={"dotted"} padding={"tight"}>
-      <Banner title="shipping-delay-message">
-          Shipping Delay Message goes here
-      </Banner>
+    <BlockStack>
+      {lines.current.map((line) => {
+        const metafields = useMetafields({
+          ownerType: "PRODUCT",
+          ownerId: line.merchandise.product.id,
+          namespace: "custom",
+          key: "shipping_delay_message",
+        });
+
+        console.log(
+          `Metafields for product ${line.merchandise.product.id}:`,
+          metafields
+        );
+
+        let metafieldValue;
+        if (Array.isArray(metafields) && metafields.length > 0) {
+          metafieldValue = metafields[0].value;
+        } else {
+          metafieldValue = "No shipping delay message.";
+        }
+
+        return (
+          <Banner key={line.id} title="Shipping Delay">
+            <Text>{metafieldValue}</Text>
+          </Banner>
+        );
+      })}
     </BlockStack>
   );
 }
